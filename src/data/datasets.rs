@@ -117,8 +117,8 @@ fn valid_pos(position: Vec<i32>, pl: i32) -> bool {
 
     // See if the previous player had a valid position
     let mut opp_had_played: bool = false;
-    for i in opp {
-        let nb_has_0 = nei.get(&i).unwrap().iter().any(|&u| u == 0);
+    for i in &opp {
+        let nb_has_0 = nei.get(&i).unwrap().iter().any(|&u| position[u] == 0);
         if nb_has_0 {
             opp_had_played = true;
             break;
@@ -127,14 +127,14 @@ fn valid_pos(position: Vec<i32>, pl: i32) -> bool {
 
     let mut pl_has_valid: bool = false;
     for i in ally {
-        let nb_has_0 = nei.get(&i).unwrap().iter().any(|&u| u == 0);
+        let nb_has_0 = nei.get(&i).unwrap().iter().any(|&u| position[u] == 0);
         if nb_has_0 {
             pl_has_valid = true;
             break;
         }
     }
 
-    opp_had_played && pl_has_valid
+    (opp_had_played || opp.len() == 0) && pl_has_valid
 }
 
 // ======================= BALANCIND DATASETS ============================
