@@ -23,5 +23,5 @@ No vectorization and batch processing here
 cargo run
 ```
 
-## Latex documentation 
+## Project documentation 
 **fanorona.pdf**
