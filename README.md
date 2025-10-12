@@ -8,8 +8,22 @@ The neural network will try to imitate the minimax algorithm for a fanorontelo b
 ## Regard of this branch
 This is a vectorized implementation of the neural network gradient descent and backpropagation algorithm using Rust's `ndarray` library for efficient matrix and vector operations
 
+## Src directory Breakdown
+- **neural.rs**: Neural network implementation
+- **fanorona3.rs**: Game logic for fanorona 3x3 (fanorontelo)
+- **tictactoe.rs**: [test] Game logic for a tictactoe game (to test mini generic modeling)
+- **dataset.rs**: [test] Tictactoe dataset generation (to test mini generic modeling)
+- **main.rs**: calling model creation and training or playing against a model
 
 ## Quick Start
-
+- to play with a model in CLI (saved in <model_bin_path>)
 ```bash
-cargo run
+cargo run [options] play <model_bin_path>
+```
+- create or train models (saving each epoch parameters in the <model_save_dir> directory)
+```bash
+cargo run [options] cm <model_save_dir>
+
+# to activate rust optimizations
+cargo run --release cm <model_save_dir>
+```
