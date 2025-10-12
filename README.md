@@ -7,6 +7,7 @@ The neural network will try to imitate the minimax algorithm for a fanorontelo b
 
 ## Regard of this branch
 This is the stochastic implementation of the neural network gradient descent and back propagation algorithm
+No vectorization and batch processing here
 
 ## Src directory Breakdown
 
