@@ -33,12 +33,12 @@ fn main() {
     // ==================== TRAINING CONSTANTS ===============================
     const LEARNING_RATE: f64 = 0.001;
     const EPOCHS: usize = 100;
-    const TRAIN_FILE: &str = "datasets/depth7/balanced_training.txt";
+    const TRAIN_FILE: &str = "datasets/depth7/training.txt";
     // // this is the directory where you model will be registered
 
     const MODELS_DIR: &str = "models"; // Directory where models will be saved
     //This is the identification of your model type
-    const MODEL_NAME: &str = "fn_model_d7_ng_v2"; // Each model will be saved for every epochs of the training
+    const MODEL_NAME: &str = "fn_md"; // Each model will be saved for every epochs of the training
     const INPUT_SIZE: usize = 46;
     // // // =======================================================================
     let layer_sizes: Vec<usize> = vec![64, 18];
