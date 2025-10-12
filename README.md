@@ -16,11 +16,11 @@ Vectorization of batch processing using ndarray to increase performance
 - **main.rs**: calling model creation and training or playing against a model
 
 ## Quick Start
-- to play with a model (saved in <model_bin_path>)
+- to play with a model in CLI (saved in <model_bin_path>)
 ```bash
 cargo run play [options] <model_bin_path>
 ```
-- create or train models (saving each epoch parameters in the model_save_dir directory)
+- create or train models (saving each epoch parameters in the <model_save_dir> directory)
 ```bash
 cargo run cm [options] <model_save_dir>
 ```
