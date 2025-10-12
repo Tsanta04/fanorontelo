@@ -6,16 +6,11 @@ A Rust crate for experimenting with neural networks, games, and math utils. Dive
 The neural network will try to imitate the minimax algorithm for a fanorontelo bot which predict the best move from a given position
 
 ## Regard of this branch
-This is the stochastic implementation of the neural network gradient descent and back propagation algorithm
-No vectorization and batch processing here
+Vectorization of batch processing using ndarray
 
 ## Src directory Breakdown
-
-- **data/**: Manages datasets creation and data loading pipelines.
-- **games/**: Core game logic, including Fanorona rules and MinMax AI strategies.
-- **maths/**: Math foundations – activations (ReLU, Sigmoid, Softmax) and collectors for matrices/vectors.
-- **nn/**: Neural network essentials: initialization, learning algorithms, and prediction routines.
-- **testing/**: Utilities for testing predictions and training workflows.
+neural.rs: Neural network implementation
+fanorona3.rs: Game logic for fanorona 3x3 (fanorontelo)
 
 ## Quick Start
 
