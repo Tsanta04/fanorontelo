@@ -1,4 +1,4 @@
-# Rust AI Playground
+# Rust coded neural network for fanorontelo best move predictor
 [![Rust](https://img.shields.io/badge/Rust-1.80-orange?logo=rust)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
