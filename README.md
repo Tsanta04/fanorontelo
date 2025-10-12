@@ -5,6 +5,9 @@
 A Rust crate for experimenting with neural networks, games, and math utils. Dive into AI-driven gameplay like Fanorontelo (a malagasy game) with MinMax and NN magic!
 The neural network will try to imitate the minimax algorithm for a fanorontelo bot which predict the best move from a given position
 
+## Regard of this branch
+This is the stochastic implementation of the neural network gradient descent and back propagation algorithm
+
 ## Src directory Breakdown
 
 - **data/**: Manages datasets creation and data loading pipelines.
