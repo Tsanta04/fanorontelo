@@ -1,0 +1,982 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,decorations.pathreplacing,calc}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems,skins}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Configuration géométrique et typographique
+\geometry{margin=2.5cm}
+\numberwithin{equation}{section}
+
+% Couleurs personnalisées
+\definecolor{primaryblue}{RGB}{30,75,140}
+\definecolor{secondarygreen}{RGB}{34,139,34}
+\definecolor{accentorange}{RGB}{255,140,0}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+% Mise en forme générale améliorée
+\raggedbottom
+\linespread{1.1}
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+
+% Configuration des titres avec couleurs
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{primaryblue}}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge\color{primaryblue}}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{primaryblue}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{secondarygreen}}
+  {\thesubsection}{1em}{}
+
+% Espacement des titres
+\titlespacing*{\chapter}{0pt}{20pt}{15pt}
+\titlespacing*{\section}{0pt}{15pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{6pt}
+
+% En-têtes et pieds stylisés
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\color{primaryblue}\textsc{R. N. - Fanorona 3×3}}
+\fancyhead[R]{\color{primaryblue}\nouppercase{\leftmark}}
+\fancyfoot[C]{\color{primaryblue}\thepage}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primaryblue}\leaders\hrule height \headrulewidth\hfill}}
+
+% Configuration des liens
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primaryblue,
+  citecolor=secondarygreen,
+  urlcolor=accentorange,
+  pdftitle={Réseau de neurones pour le Fanorona 3×3},
+  pdfauthor={Cyriaque, Tsanta, Aro, Peniala}
+}
+
+% Boîtes théorèmes colorées
+\newtcolorbox{definition}[1][]{
+  colback=lightgray,
+  colframe=primaryblue,
+  coltitle=white,
+  colbacktitle=primaryblue,
+  boxrule=1pt,
+  arc=3pt,
+  fonttitle=\bfseries,
+  title={#1}
+}
+
+\newtcolorbox{theorem}[1][]{
+  colback=blue!5,
+  colframe=primaryblue,
+  coltitle=white,
+  colbacktitle=primaryblue,
+  boxrule=1pt,
+  arc=3pt,
+  fonttitle=\bfseries,
+  title={#1}
+}
+
+\newtcolorbox{remark}{
+  colback=green!5,
+  colframe=secondarygreen,
+  boxrule=1pt,
+  arc=3pt,
+  fonttitle=\bfseries\color{secondarygreen},
+  title=Remarque
+}
+
+\newtcolorbox{important}{
+  colback=orange!10,
+  colframe=accentorange,
+  boxrule=2pt,
+  arc=3pt,
+  fonttitle=\bfseries\color{accentorange},
+  title=Important
+}
+
+% Titre amélioré
+\title{
+  \vspace{-2cm}
+  {\color{primaryblue}\Huge\textbf{Réseau de neurones pour le Fanorona 3×3}}\\
+  \vspace{0.5cm}
+  {\color{secondarygreen}\Large Fondements mathématiques et implémentation avancée}\\
+  \vspace{0.3cm}
+  {\color{accentorange}\large Une approche généralisée de l'apprentissage automatique appliqué aux jeux traditionnels}\\
+  \vspace{1.0cm}
+  {\color{primaryblue}\large MIT - L3}
+}
+\author{
+  \vspace{0.3cm}
+  {\color{primaryblue}\textbf{RAMAROSON Tojotiana Cyriaque}} \and 
+  \vspace{0.3cm}
+  {\color{primaryblue}\textbf{RANDRIANARISOA Tsantamirindra}} \and 
+  \vspace{0.3cm} 
+  {\color{primaryblue}\textbf{RAKOTOARIJAONA Aro Mino Avotra}} \and
+  \vspace{0.3cm} 
+  {\color{primaryblue}\textbf{RANAIVO Ny Aina Peniala}}
+}
+\date{}
+
+\begin{document}
+\pagenumbering{roman}
+\maketitle
+
+\begin{abstract}
+\color{black}
+Ce document présente une analyse de l'architecture, de l'implémentation et des fondements mathématiques d'un réseau de neurones artificiels développé spécifiquement pour le jeu traditionnel malgache \emph{Fanorona} sur plateau 3×3. L'étude couvre les aspects théoriques profonds incluant l'encodage vectoriel des états de jeu, la formulation des algorithmes de propagation avant et arrière, les justifications mathématiques des choix d'activation (ReLU, softmax), d'initialisation (Xavier), et de fonction de perte (entropie croisée). Le rapport détaille également la génération synthétique des données d'entraînement et présente l'implémentation modulaire en Rust avec traitement par mini-batch. L'architecture générique permet une configuration flexible des couches, utilisant la fonction ReLU pour les couches cachées et softmax pour la couche de sortie, produisant 81 logits correspondant aux 81 coups possibles (9×9 positions départ-arrivée).
+\end{abstract}
+
+\clearpage
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\chapter{Introduction et contexte}
+
+\section{Objectifs et motivation}
+Le développement de systèmes d'intelligence artificielle capables de maîtriser des jeux complexes constitue un domaine de recherche fondamental en apprentissage automatique. Ce projet vise à concevoir, analyser théoriquement et implémenter un réseau de neurones capable d'imiter des stratégies optimales pour le jeu Fanorona sur un plateau réduit de dimensions 3×3.
+
+\begin{important}
+L'approche adoptée privilégie une double perspective : d'une part, l'exposition rigoureuse des fondements mathématiques sous-jacents au modèle et aux algorithmes d'apprentissage ; d'autre part, la traduction pratique de ces formulations théoriques dans une implémentation performante en Rust avec optimisations batch.
+\end{important}
+
+\section{Architecture générique et spécialisations}
+Le modèle développé présente une architecture générique paramétrable par une liste de tailles de couches, offrant ainsi une flexibilité maximale pour l'expérimentation. Dans l'usage pratique du projet :
+\begin{itemize}
+  \item \textbf{Couches cachées} : activation par fonction ReLU $\text{ReLU}(z) = \max(0, z)$
+  \item \textbf{Couche de sortie} : production de 81 logits suivie de l'application d'un softmax global
+  \item \textbf{Représentation unifiée} : un seul vecteur de probabilités pour tous les coups possibles $(d,a)$
+\end{itemize}
+
+Cette architecture unifiée permet une modélisation naturelle de l'espace des coups où chaque coup $(d,a)$ est indexé par $9d + a$, produisant un espace de sortie de dimension 81.
+
+\chapter{Modélisation mathématique du jeu}
+
+\section{Formalisation de l'espace d'états}
+
+\subsection{Représentation discrète du plateau}
+Soit $\mathcal{P} = \{0, 1, 2, \ldots, 8\}$ l'ensemble des positions sur le plateau 3×3. Chaque case $i \in \mathcal{P}$ est caractérisée par un état $s_i$ appartenant à l'ensemble discret :
+
+\begin{definition}
+L'espace d'états par case est défini comme :
+$$\mathcal{S} = \{-2, -1, 0, 1, 2\}$$
+où :
+\begin{align}
+s_i = -2 &\iff \text{pion du joueur A déjà déplacé en position } i\\
+s_i = -1 &\iff \text{pion du joueur A (non déplacé) en position } i\\
+s_i = 0 &\iff \text{case } i \text{ vide}\\
+s_i = 1 &\iff \text{pion du joueur B en position } i\\
+s_i = 2 &\iff \text{pion du joueur B déjà déplacé en position } i
+\end{align}
+\end{definition}
+
+L'état global du plateau est représenté par le vecteur $\mathbf{s} = (s_0, s_1, \ldots, s_8, p) \in \mathcal{S}^9 \times \{1, 2\}$ où $p$ désigne le joueur courant.
+
+\subsection{Formalisation de l'objectif d'apprentissage}
+\begin{theorem}[Problème de prédiction optimale]
+Soit $\mathcal{X} = \mathcal{S}^9 \times \{1, 2\}$ l'espace des configurations (état du plateau × joueur courant).
+L'objectif du réseau de neurones est d'apprendre la fonction :
+$$f^* : \mathcal{X} \rightarrow \mathcal{P} \times \mathcal{P}$$
+qui associe à chaque configuration le coup optimal $(d^*, a^*)$ selon une politique experte (ex: Minimax).
+\end{theorem}
+
+\section{Encodage vectoriel et plongement}
+
+\subsection{Transformation one-hot}
+L'encodage one-hot constitue une injection de l'espace discret $\mathcal{S}$ vers un sous-espace de $\mathbb{R}^5$ :
+
+\begin{definition}[Fonction d'encodage one-hot]
+$$\phi : \mathcal{S} \rightarrow \{0,1\}^5$$
+définie par :
+$$\phi(s) = \begin{cases}
+[0,0,0,1,0]^T & \text{si } s = -2\\
+[0,0,0,0,1]^T & \text{si } s = -1\\
+[1,0,0,0,0]^T & \text{si } s = 0\\
+[0,1,0,0,0]^T & \text{si } s = 1\\
+[0,0,1,0,0]^T & \text{si } s = 2
+\end{cases}$$
+\end{definition}
+
+\begin{theorem}[Propriétés de l'encodage one-hot]
+L'encodage one-hot $\phi$ satisfait les propriétés suivantes :
+\begin{enumerate}
+  \item \textbf{Injectivité} : $\phi$ est une injection, i.e., $\phi(s_1) = \phi(s_2) \Rightarrow s_1 = s_2$
+  \item \textbf{Orthogonalité} : $\forall s_1 \neq s_2, \langle \phi(s_1), \phi(s_2) \rangle = 0$
+  \item \textbf{Normalisation} : $\forall s \in \mathcal{S}, \|\phi(s)\|_2 = 1$
+\end{enumerate}
+\end{theorem}
+
+\subsection{Construction du vecteur d'entrée}
+Le vecteur d'entrée du réseau est construit par concaténation :
+
+$$\mathbf{x} = \begin{bmatrix}
+\phi(s_0)\\
+\phi(s_1)\\
+\vdots\\
+\phi(s_8)\\
+p - 1
+\end{bmatrix} \in \mathbb{R}^{46}$$
+
+où $p \in \{1, 2\}$ identifie le joueur courant, et $(p-1) \in \{0, 1\}$ est ajouté comme dernière composante.
+
+\begin{remark}
+Cette représentation évite l'introduction d'un ordre numérique arbitraire entre les différents états de cases, préservant ainsi la structure catégorielle naturelle du problème.
+\end{remark}
+
+\section{Génération synthétique des données}
+
+\begin{important}
+Étant donné l'absence de datasets publics pour le Fanorona 3×3, l'ensemble d'entraînement a été synthétisé algorithmiquement. Les étiquettes $(d^*, a^*)$ sont générées par un oracle externe (algorithme Minimax, heuristique experte) appliqué aux configurations de jeu.
+\end{important}
+
+Cette approche de génération automatique présente l'avantage de produire un dataset équilibré et exhaustif, couvrant une large gamme de configurations possibles.
+
+\chapter{Architecture du réseau neuronal}
+
+\section{Formalisme mathématique général}
+
+\subsection{Notations et conventions}
+Soit $L \in \mathbb{N}^*$ le nombre total de couches (incluant la couche de sortie). Pour chaque couche $k \in \{1, 2, \ldots, L\}$ :
+
+\begin{itemize}
+  \item $W^{(k)} \in \mathbb{R}^{m_k \times n_k}$ : matrice des poids de connexion
+  \item $\mathbf{b}^{(k)} \in \mathbb{R}^{m_k}$ : vecteur de biais
+  \item $\mathbf{z}^{(k)} \in \mathbb{R}^{m_k}$ : entrée nette (avant activation)
+  \item $\mathbf{a}^{(k)} \in \mathbb{R}^{m_k}$ : sortie activée
+  \item $m_k$ : nombre de neurones dans la couche $k$
+  \item $n_k$ : dimension de l'entrée de la couche $k$
+\end{itemize}
+
+avec la convention $\mathbf{a}^{(0)} = \mathbf{x}$ (vecteur d'entrée du réseau).
+
+\subsection{Illustration architecturale améliorée}
+
+\begin{center}
+\begin{tikzpicture}[
+    scale=1,
+    neuron/.style={circle, draw=primaryblue!80, fill=blue!15, minimum size=4mm, inner sep=0pt, thick},
+    input/.style={circle, draw=secondarygreen!80, fill=green!15, minimum size=4mm, inner sep=0pt, thick},
+    output/.style={circle, draw=accentorange!80, fill=orange!15, minimum size=4mm, inner sep=0pt, thick},
+    connection/.style={->, very thin, gray!50},
+    thickconnection/.style={->, thick, gray!70},
+    >=stealth
+]
+
+% Couche d'entrée (46 neurones) - représentation simplifiée
+\foreach \y [count=\n] in {2, 1.5, 1} {
+    \node[input] (I\n) at (0, \y) {};
+}
+\node[font=\small] at (0, 0.3) {\color{secondarygreen}$\vdots$};
+
+\foreach \y [count=\m from 4] in {-0.5, -1, -1.5} {
+    \node[input] (I\m) at (0, \y) {};
+}
+
+% Label pour l'entrée
+\node[below=15mm of I6, align=center, color=secondarygreen, font=\footnotesize\bfseries] {
+    \textbf{Entrée}\\
+    46 neurones\\
+    $\mathbf{x} \in \mathbb{R}^{46}$
+};
+
+% 1ère couche cachée (générique)
+\foreach \y [count=\n] in {2, 1.5, 1} {
+    \node[neuron] (H1\n) at (2.5, \y) {};
+}
+
+\node[font=\small] at (2.5, 0.3) {\color{primaryblue}$\vdots$};
+
+\foreach \y [count=\m from 4] in {-0.5, -1, -1.5} {
+    \node[neuron] (H1\m) at (2.5, \y) {};
+}
+
+% Label pour couche 1
+\node[below=15mm of H16, align=center, color=primaryblue, font=\footnotesize\bfseries] {
+    \textbf{Couche 1}\\
+    $m_1$ neurones\\
+    ReLU
+};
+
+% 2ème couche cachée (générique)
+\foreach \y [count=\n] in {2, 1.5, 1} {
+    \node[neuron] (H2\n) at (5, \y) {};
+}
+
+\node[font=\small] at (5, 0.3) {\color{primaryblue}$\vdots$};
+
+\foreach \y [count=\m from 4] in {-0.5, -1, -1.5} {
+    \node[neuron] (H2\m) at (5, \y) {};
+}
+
+% Label pour couche 2
+\node[below=15mm of H26, align=center, color=primaryblue, font=\footnotesize\bfseries] {
+    \textbf{Couche 2}\\
+    $m_2$ neurones\\
+    ReLU
+};
+
+% Points de suspension pour couches intermédiaires
+\node[font=\Large, color=primaryblue] at (6.5, 0) {$\cdots$};
+
+\node[below=2mm, color=primaryblue, font=\scriptsize, align=center] at (6.5, 0) {
+    Couches\\$3, \ldots, L-1$
+};
+
+% Dernière couche cachée
+\foreach \y [count = \n] in {2, 1.5, 1} {
+    \node[neuron] (HL\n) at (8, \y) {};
+}
+
+\node[font=\small] at (8, 0.3) {\color{primaryblue}$\vdots$};
+
+\foreach \y [count = \m from 4] in {-0.5, -1, -1.5} {
+    \node[neuron] (HL\m) at (8, \y) {};
+}
+
+% Label pour dernière couche cachée
+\node[below=15mm of HL6, align=center, color=primaryblue, font=\footnotesize\bfseries] {
+    \textbf{Couche $L-1$}\\
+    $m_{L-1}$ neurones\\
+    ReLU
+};
+
+% Couche de sortie - logits (81 neurones)
+\foreach \y [count = \n] in {3, 2.5, 2, 1.5} {
+    \node[output] (OL\n) at (11, \y) {};
+}
+\node[font=\small] at (11, 0.8) {\color{accentorange}$\vdots$};
+
+\foreach \y [count = \o from 5] in {-0.5, -1, -1.5, -2} {
+    \node[output] (OL\o) at (11, \y) {};
+}
+% Label pour couche logits
+\node[below=12mm of OL8, align=center, color=accentorange, font=\footnotesize\bfseries] {
+    \textbf{Sortie}\\
+    81 neurones\\
+    Softmax\\
+    $\mathbf{p} \in [0,1]^{81}$
+};
+
+% Connexions entre couches (échantillon représentatif)
+% Entrée vers couche 1
+\foreach \i in {1,...,6} {
+    \foreach \j in {1,...,6} {
+        \draw[connection, very thin] (I\i) -- (H1\j);
+    }
+}
+
+\foreach \i in {1,...,6} {
+    \foreach \j in {1,...,6} {
+        \draw[connection, thin] (H1\i) -- (H2\j);
+    }
+}
+
+\foreach \i in {1,...,6} {
+    \foreach \j in {1,...,8} {
+        \draw[connection, very thin, orange!30] (HL\i) -- (OL\j);
+    }
+}
+
+% Annotations avec accolades
+\draw[decoration={brace, amplitude=4pt, mirror}, decorate, thick, secondarygreen] 
+    (-0.7, 2.2) -- (-0.7, -1.8);
+
+\node[left=3pt, color=secondarygreen, font=\scriptsize, align=center] at (-1, 0.2) {
+    Encodage\\one-hot\\du plateau\\+ joueur
+};
+
+\draw[decoration={brace, amplitude=5pt}, decorate, thick, accentorange] 
+    (11.5, 3.2) -- (11.5, -2.2);
+
+\node[right=8pt, color=accentorange, font=\scriptsize, align=center] at (11.5, 0.5) {
+    Probabilités\\pour les 81\\coups possibles\\$(d,a)$
+};
+
+\end{tikzpicture}
+\end{center}
+
+\subsection{Propagation avant : formulation mathématique}
+
+\begin{theorem}[Algorithme de propagation avant]
+Pour chaque couche $k \in \{1, 2, \ldots, L\}$, le calcul de propagation avant s'effectue selon :
+\begin{align}
+\mathbf{z}^{(k)} &= W^{(k)} \mathbf{a}^{(k-1)} + \mathbf{b}^{(k)} \label{eq:linear_transform}\\
+\mathbf{a}^{(k)} &= \phi^{(k)}(\mathbf{z}^{(k)}) \label{eq:activation_function}
+\end{align}
+où $\phi^{(k)}$ désigne la fonction d'activation de la couche $k$.
+\end{theorem}
+
+\section{Fonctions d'activation et leurs propriétés}
+
+\subsection{Fonction ReLU pour les couches cachées}
+
+\begin{definition}[Fonction ReLU]
+La fonction Rectified Linear Unit (ReLU) est définie par :
+$$\text{ReLU}(z) = \max(0, z)$$
+avec pour dérivée :
+$$\text{ReLU}'(z) = \begin{cases}
+1 & \text{si } z > 0\\
+0 & \text{si } z \leq 0
+\end{cases}$$
+\end{definition}
+
+\begin{theorem}[Propriétés de ReLU]
+La fonction ReLU satisfait :
+\begin{enumerate}
+  \item \textbf{Non-linéarité} : ReLU introduit une non-linéarité tout en préservant la linéarité pour $z > 0$
+  \item \textbf{Sparse activation} : Pour toute entrée, seule une partie des neurones est activée
+  \item \textbf{Gradient non-saturant} : Pas de problème de gradient vanishing pour $z > 0$
+  \item \textbf{Efficacité computationnelle} : Calcul très rapide (simple comparaison)
+\end{enumerate}
+\end{theorem}
+
+\subsection{Softmax pour la couche de sortie}
+
+Pour la couche de sortie $(k = L)$, les logits $\mathbf{z}^{(L)} \in \mathbb{R}^{81}$ sont transformés par la fonction softmax :
+
+\begin{definition}[Fonction softmax]
+$$\text{softmax}(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=0}^{80} e^{z_j}}, \quad i \in \{0, 1, \ldots, 80\}$$
+\end{definition}
+
+La sortie finale est : $\mathbf{a}^{(L)} = \text{softmax}(\mathbf{z}^{(L)}) \in [0,1]^{81}$ avec $\sum_{i=0}^{80} a^{(L)}_i = 1$.
+
+\chapter{Fonction de perte et optimisation}
+
+\section{Construction de l'étiquette cible}
+
+\begin{definition}[Vecteur d'étiquetage]
+Pour un exemple d'entraînement avec étiquette $(d^*, a^*) \in \mathcal{P} \times \mathcal{P}$, le vecteur cible $\mathbf{y} \in \{0,1\}^{81}$ est défini par :
+$$y_i = \begin{cases}
+1 & \text{si } i = 9d^* + a^*\\
+0 & \text{sinon}
+\end{cases}$$
+\end{definition}
+
+Cette construction encode le coup optimal $(d^*, a^*)$ comme l'indice unique $9d^* + a^*$ dans un vecteur one-hot de dimension 81.
+
+\section{Fonction de perte : entropie croisée}
+
+\begin{definition}[Fonction de perte entropie croisée]
+La fonction de perte utilisée est l'entropie croisée catégorielle :
+$$\mathcal{L}(\mathbf{x}; d^*, a^*) = -\sum_{i=0}^{80} y_i \log a^{(L)}_i = -\log a^{(L)}_{9d^* + a^*}$$
+\end{definition}
+
+Cette formulation présente plusieurs avantages théoriques :
+\begin{itemize}
+  \item \textbf{Convexité} par rapport aux paramètres de la dernière couche
+  \item \textbf{Gradient non-nul} même pour des prédictions très confiantes mais erronées
+  \item \textbf{Interprétation probabiliste} naturelle
+\end{itemize}
+
+\section{Algorithme de rétropropagation}
+
+\subsection{Gradient en sortie : propriété fondamentale}
+
+\begin{theorem}[Gradient simplifié softmax avec entropie croisée]
+Pour la combinaison softmax avec entropie croisée, le gradient par rapport aux logits se simplifie remarquablement :
+$$\delta^{(L)}_i \equiv \frac{\partial \mathcal{L}}{\partial z^{(L)}_i} = a^{(L)}_i - y_i, \quad \forall i \in \{0, 1, \ldots, 80\}$$
+\end{theorem}
+
+\begin{proof}
+La démonstration suit le même raisonnement que précédemment. Sachant que la fonction softmax est définie par :
+
+$$a_i = \frac{e^{z_i}}{\sum_{j=0}^{80} e^{z_j}}$$
+
+et que la fonction de perte est :
+
+$$\mathcal{L} = -\log(a_{9d^* + a^*})$$
+
+On calcule :
+
+$$\frac{\partial \mathcal{L}}{\partial z_i} = \frac{\partial}{\partial z_i} \Big( -\log(a_{9d^* + a^*}) \Big)$$
+
+\paragraph{Cas 1 : $i = 9d^* + a^*$}
+
+$$\frac{\partial}{\partial z_i} \big(-\log(a_i)\big) = - \frac{1}{a_i} \cdot a_i(1 - a_i) = a_i - 1$$
+
+\paragraph{Cas 2 : $i \neq 9d^* + a^*$}
+
+$$\frac{\partial}{\partial z_i} \big(-\log(a_{9d^* + a^*})\big) = - \frac{1}{a_{9d^* + a^*}} \cdot (-a_{9d^* + a^*} a_i) = a_i$$
+
+D'où,
+$$\boxed{\delta^{(L)}_i = a^{(L)}_i - y_i, \quad \forall i \in \{0, 1, \ldots, 80\}}$$
+\end{proof}
+
+\subsection{Rétropropagation dans les couches cachées}
+
+\begin{theorem}[Formule de rétropropagation pour ReLU]
+Pour une couche cachée $k < L$ avec activation ReLU :
+$$\delta^{(k-1)}_j = \Big(\sum_{i=1}^{n_k} \delta^{(k)}_i \, W^{(k)}_{ij}\Big) \cdot \mathbb{1}_{z^{(k-1)}_j > 0}$$
+où $\mathbb{1}_{z > 0}$ est la fonction indicatrice.
+\end{theorem}
+
+\begin{proof}
+Soit une couche $k$ du réseau. Pour tout neurone $i$ de cette couche on pose :
+
+$z^{(k)}_i = \sum_{j=1}^{n_{k-1}} W^{(k)}_{ij}\, a^{(k-1)}_j + b^{(k)}_i,$
+$a^{(k)}_i = \text{ReLU}(z^{(k)}_i) = \max(0, z^{(k)}_i)$
+
+Nous voulons obtenir $\delta^{(k-1)}_j \coloneqq \dfrac{\partial \mathcal{L}}{\partial z^{(k-1)}_j}$ en fonction des quantités connues en couche $k$.
+
+\paragraph{Dérivée de la perte par rapport à l'activation $a^{(k-1)}_j$.}
+
+Par la règle de la chaîne, $a^{(k-1)}_j$ n'apparaît que dans les pré-activations $z^{(k)}_i$ de la couche suivante, donc
+$\frac{\partial \mathcal{L}}{\partial a^{(k-1)}_j} = \sum_{i=1}^{n_k} \frac{\partial \mathcal{L}}{\partial z^{(k)}_i}\; \frac{\partial z^{(k)}_i}{\partial a^{(k-1)}_j}$
+
+Or $z^{(k)}_i = \sum_{t} W^{(k)}_{it}\, a^{(k-1)}_t + b^{(k)}_i$, donc
+$\frac{\partial z^{(k)}_i}{\partial a^{(k-1)}_j} = W^{(k)}_{ij}$
+
+D'où :
+$\frac{\partial \mathcal{L}}{\partial a^{(k-1)}_j} = \sum_{i=1}^{n_k} \delta^{(k)}_i \, W^{(k)}_{ij}$
+
+\paragraph{Dérivée de ReLU.}
+La dérivée de ReLU est :
+$\text{ReLU}'(z) = \begin{cases} 1 & \text{si } z > 0\\ 0 & \text{sinon} \end{cases} = \mathbb{1}_{z > 0}$
+
+\paragraph{Passage de $\partial\mathcal{L}/\partial a^{(k-1)}_j$ à $\partial\mathcal{L}/\partial z^{(k-1)}_j$.}
+On applique la chaîne sur $a^{(k-1)}_j = \text{ReLU}(z^{(k-1)}_j)$ :
+
+$\delta^{(k-1)}_j = \frac{\partial \mathcal{L}}{\partial z^{(k-1)}_j} = \frac{\partial \mathcal{L}}{\partial a^{(k-1)}_j} \cdot \frac{da^{(k-1)}_j}{dz^{(k-1)}_j}$
+
+$= \Big(\sum_{i=1}^{n_k} \delta^{(k)}_i \, W^{(k)}_{ij}\Big) \cdot \mathbb{1}_{z^{(k-1)}_j > 0}$
+
+D'où la formule :
+$\boxed{\delta^{(k-1)}_j = \Big(\sum_{i=1}^{n_k} \delta^{(k)}_i \, W^{(k)}_{ij}\Big) \cdot \mathbb{1}_{z^{(k-1)}_j > 0}}$
+\end{proof}
+
+\subsection{Gradients des paramètres}
+
+\begin{theorem}[Gradients des poids et biais]
+Les gradients des paramètres de chaque couche $k$ sont donnés par :
+\begin{align}
+\frac{\partial \mathcal{L}}{\partial W^{(k)}_{ij}} &= \delta^{(k)}_i \cdot a^{(k-1)}_j \label{eq:grad_weights}\\
+\frac{\partial \mathcal{L}}{\partial b^{(k)}_i} &= \delta^{(k)}_i \label{eq:grad_bias}
+\end{align}
+\end{theorem}
+
+\chapter{Initialisation et stabilité numérique}
+
+\section{Initialisation Xavier : fondements théoriques}
+
+\begin{theorem}[Initialisation Xavier uniforme]
+Pour une couche avec $n_{\text{in}}$ entrées et $n_{\text{out}}$ sorties, l'initialisation Xavier uniforme tire les poids selon :
+$W_{ij} \sim \mathcal{U}\left(-\sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}, \sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}\right)$
+\end{theorem}
+
+\begin{remark}
+Cette initialisation vise à maintenir la variance des activations approximativement constante à travers les couches, évitant ainsi les problèmes de gradient qui disparaît ou explose lors de l'entraînement de réseaux profonds.
+\end{remark}
+
+\subsection{Justification mathématique}
+
+L'objectif de l'initialisation Xavier est de satisfaire :
+$\text{Var}(a^{(k)}_i) \approx \text{Var}(a^{(k-1)}_j), \quad \forall k$
+
+Pour une activation linéaire $z = \sum_{j} W_{ij} a_j$, sous l'hypothèse d'indépendance :
+$\text{Var}(z) = \sum_{j} W_{ij}^2 \text{Var}(a_j) \approx n_{\text{in}} \cdot \text{Var}(W) \cdot \text{Var}(a)$
+
+Pour maintenir $\text{Var}(z) = \text{Var}(a)$, il faut :
+$n_{\text{in}} \cdot \text{Var}(W) = 1 \Rightarrow \text{Var}(W) = \frac{1}{n_{\text{in}}}$
+
+L'initialisation Xavier généralise cette condition en considérant également la propagation arrière, d'où la moyenne harmonique $\frac{2}{n_{\text{in}} + n_{\text{out}}}$.
+
+\section{Algorithme d'optimisation par mini-batch}
+
+\subsection{Descente de gradient stochastique par mini-batch}
+
+Le modèle d'apprentissage utilise des \emph{mini-batches} de positions du jeu au lieu d'une seule position à chaque mise à jour.
+Chaque mini-batch contient un sous-ensemble aléatoire de positions extraites du jeu d'entraînement :
+$B_t = \{(x_i, y_i)\}_{i=1}^{m} \subset D$
+où $m$ est la taille du batch, et $D$ l'ensemble total des positions d'entraînement.
+
+\begin{definition}[Gradient de batch]
+Pour chaque batch $B_t$, les gradients individuels $\nabla_\theta \mathcal{L}(x_i, y_i; \theta)$ sont d'abord calculés et sommés, puis moyennés avant d'être appliqués aux poids du réseau :
+$\nabla_\theta \mathcal{L}_{B_t}(\theta) = \frac{1}{m} \sum_{(x_i, y_i) \in B_t} \nabla_\theta \mathcal{L}(x_i, y_i; \theta)$
+La mise à jour des paramètres devient :
+$\theta_{t+1} = \theta_t - \alpha_t \, \nabla_\theta \mathcal{L}_{B_t}(\theta_t)$
+où $\alpha_t$ est le taux d'apprentissage.
+\end{definition}
+
+\subsection{Implémentation matricielle par batch}
+
+\begin{important}
+L'implémentation utilise des opérations matricielles pour traiter simultanément tous les exemples d'un batch :
+\begin{itemize}
+  \item $X \in \mathbb{R}^{m \times n_0}$ : matrice des entrées (batch)
+  \item $Y \in \mathbb{R}^{m \times 81}$ : matrice des étiquettes (batch)
+  \item $Z^{(k)} \in \mathbb{R}^{m \times n_k}$ : pré-activations du batch
+  \item $A^{(k)} \in \mathbb{R}^{m \times n_k}$ : activations du batch
+\end{itemize}
+
+La propagation avant par batch s'écrit :
+$Z^{(k)} = A^{(k-1)} W^{(k)} + \mathbf{1}_m \otimes \mathbf{b}^{(k)T}$
+$A^{(k)} = \phi^{(k)}(Z^{(k)})$
+où $\mathbf{1}_m$ est le vecteur colonne de $m$ uns et $\otimes$ le produit extérieur.
+\end{important}
+
+\subsection{Avantages du traitement par batch}
+
+\begin{enumerate}
+  \item \textbf{Parallélisation} : exploitation des bibliothèques BLAS optimisées
+  \item \textbf{Stabilité} : réduction de la variance du gradient
+  \item \textbf{Généralisation} : régularisation implicite
+  \item \textbf{Convergence} : trajectoire d'optimisation plus stable
+\end{enumerate}
+
+\chapter{Sélection de coups et évaluation}
+
+\section{Stratégie de décision}
+
+\begin{definition}[Prédiction du meilleur coup]
+Le réseau produit un vecteur de probabilités $\mathbf{p} = \mathbf{a}^{(L)} \in [0,1]^{81}$ où chaque composante $p_i$ représente la probabilité que le coup indexé par $i$ soit optimal.
+
+Le coup prédit $(d_{\text{pred}}, a_{\text{pred}})$ est obtenu par :
+$i^* = \arg\max_{i \in \{0, \ldots, 80\}} p_i$
+$d_{\text{pred}} = \lfloor i^* / 9 \rfloor, \quad a_{\text{pred}} = i^* \mod 9$
+\end{definition}
+
+% \section{Validation des coups légaux}
+
+% \begin{important}
+% Dans la pratique, tous les coups ne sont pas légaux dans un état donné. Un système de validation est implémenté pour :
+% \begin{itemize}
+%   \item Vérifier que la case de départ contient un pion du joueur actuel
+%   \item Vérifier que la case d'arrivée est vide
+%   \item Vérifier que les cases sont adjacentes selon le graphe de connectivité
+% \end{itemize}
+
+% Le graphe de voisinage est défini par la fonction \texttt{neighbors()} qui retourne pour chaque position ses voisins accessibles.
+% \end{important}
+
+\chapter{Analyse de performance et validation}
+
+\section{Métriques d'évaluation}
+
+\subsection{Précision globale}
+$\text{Précision}_{\text{coup}} = \frac{\text{Nombre de coups }(d,a)\text{ correctement prédits}}{\text{Nombre total d'exemples}}$
+
+\subsection{Taux de coups valides}
+$\text{Validité} = \frac{\text{Nombre de coups prédits légaux}}{\text{Nombre total de prédictions}}$
+
+Cette métrique mesure la capacité du réseau à apprendre les contraintes du jeu.
+
+\section{Fonction de perte au cours de l'entraînement}
+
+La fonction de perte moyenne par époque est calculée comme :
+$\mathcal{L}_{\text{epoch}} = \frac{1}{|\mathcal{B}|} \sum_{B \in \mathcal{B}} \mathcal{L}_B$
+où $\mathcal{B}$ est l'ensemble des batches de l'époque.
+
+\begin{remark}
+Une décroissance monotone de $\mathcal{L}_{\text{epoch}}$ indique une convergence saine. Des oscillations importantes peuvent signaler un taux d'apprentissage trop élevé.
+\end{remark}
+
+\section{Validation croisée et overfitting}
+
+\begin{remark}
+Étant donné la nature synthétique des données, une attention particulière doit être portée à :
+\begin{itemize}
+  \item La diversité des configurations générées
+  \item L'équilibre entre les différentes phases de jeu
+  \item La validation sur des positions non vues pendant l'entraînement
+  \item Le suivi de la perte sur un ensemble de validation séparé
+\end{itemize}
+\end{remark}
+
+\chapter{Implémentation et aspects techniques}
+
+\section{Architecture modulaire en Rust}
+
+L'implémentation est structurée en modules spécialisés :
+
+\begin{itemize}
+  \item \texttt{\color{primaryblue}neural.rs} : Noyau du réseau neuronal et opérations matricielles
+  \begin{itemize}
+    \item Structure \texttt{Neural} contenant les paramètres
+    \item Méthodes \texttt{batch\_forward}, \texttt{batch\_grads}, \texttt{batch\_backward}
+    \item Initialisation Xavier avec \texttt{xavier()}
+    \item Sérialisation/désérialisation binaire
+  \end{itemize}
+  
+  \item \texttt{\color{primaryblue}fanorona3.rs} : Logique du jeu Fanorona
+  \begin{itemize}
+    \item Structure \texttt{Fanorontelo} représentant l'état du jeu
+    \item Fonction \texttt{one\_hot\_fanorona()} pour l'encodage
+    \item Validation des coups avec \texttt{valid\_fn3\_move()}
+    \item Génération des coups possibles
+  \end{itemize}
+  
+  \item \texttt{\color{primaryblue}dataset.rs} : Chargement et préparation des données
+  \begin{itemize}
+    \item Fonction \texttt{load\_dataset()} pour charger depuis fichier
+    \item Parsing des données d'entraînement
+  \end{itemize}
+  
+  \item \texttt{\color{primaryblue}main.rs} : Point d'entrée et orchestration
+  \begin{itemize}
+    \item Configuration des hyperparamètres
+    \item Boucle d'entraînement principale
+    \item Interface de jeu contre le modèle
+  \end{itemize}
+\end{itemize}
+
+\section{Bibliothèques utilisées}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Bibliothèque} & \textbf{Utilisation} \\
+\midrule
+\texttt{ndarray} & Opérations matricielles et tensorielles \\
+\texttt{ndarray-rand} & Initialisation aléatoire des poids \\
+\texttt{serde} & Sérialisation/désérialisation des paramètres \\
+\texttt{bincode} & Format binaire compact pour la sauvegarde \\
+\bottomrule
+\end{tabular}
+\caption{Dépendances principales du projet}
+\end{table}
+
+\section{Optimisations numériques}
+
+\subsection{Stabilité du softmax}
+Pour éviter les débordements numériques, l'implémentation utilise la forme stabilisée :
+$\text{softmax}(z_i) = \frac{e^{z_i - z_{\max}}}{\sum_j e^{z_j - z_{\max}}}$
+où $z_{\max} = \max_j z_j$.
+
+Cette transformation ne change pas le résultat car :
+$\frac{e^{z_i - c}}{\sum_j e^{z_j - c}} = \frac{e^{-c} e^{z_i}}{e^{-c} \sum_j e^{z_j}} = \frac{e^{z_i}}{\sum_j e^{z_j}}$
+
+\subsection{Gestion de la précision}
+\begin{itemize}
+  \item Utilisation de types flottants double précision (\texttt{f64})
+  \item Clipping des logarithmes : $\log(x) \to \log(\max(x, 10^{-12}))$ pour éviter $\log(0)$
+  \item Normalisation des entrées lors du chargement des données
+\end{itemize}
+
+\section{Configuration et hyperparamètres}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Hyperparamètre} & \textbf{Valeur typique} \\
+\midrule
+Taille d'entrée & 46 \\
+Taille de sortie & 81 \\
+Architecture cachée & [512, 81] \\
+Taux d'apprentissage initial & 0.3 \\
+Taille de batch & 32 \\
+Nombre d'époques & 200 \\
+\bottomrule
+\end{tabular}
+\caption{Hyperparamètres du modèle}
+\end{table}
+
+\section{Sauvegarde et chargement des modèles}
+
+Le système implémente :
+\begin{itemize}
+  \item \textbf{Sauvegarde automatique} : après chaque époque dans un fichier binaire
+  \item \textbf{Format compact} : utilisation de \texttt{bincode} pour sérialiser la structure complète
+  \item \textbf{Reprise d'entraînement} : possibilité de charger un modèle existant et continuer l'entraînement
+\end{itemize}
+
+\chapter{Interface utilisateur et mode jeu}
+
+\section{Commandes principales}
+
+Le programme offre deux modes d'utilisation :
+
+\subsection{Mode entraînement}
+\begin{verbatim}
+cargo run --release cm <model_save_dir>
+\end{verbatim}
+
+Ce mode :
+\begin{itemize}
+  \item Charge le dataset depuis \texttt{dataset/fanorona/all.txt}
+  \item Entraîne le modèle pour le nombre d'époques spécifié
+  \item Sauvegarde automatiquement après chaque époque
+  \item Affiche les métriques (perte, temps d'exécution)
+\end{itemize}
+
+\subsection{Mode jeu}
+\begin{verbatim}
+cargo run --release play <model_path>
+\end{verbatim}
+
+Ce mode :
+\begin{itemize}
+  \item Charge un modèle pré-entraîné
+  \item Permet à l'utilisateur de jouer contre l'IA
+  \item Affiche le plateau après chaque coup
+  \item Valide les coups de l'utilisateur
+\end{itemize}
+
+\section{Format des coups}
+
+Les coups sont spécifiés sous forme de deux entiers séparés par un espace :
+\begin{itemize}
+  \item Premier entier : case de départ (0-8)
+  \item Deuxième entier : case d'arrivée (0-8)
+\end{itemize}
+
+Les positions sont numérotées de gauche à droite, de haut en bas :
+$\begin{bmatrix}
+0 & 1 & 2\\
+3 & 4 & 5\\
+6 & 7 & 8
+\end{bmatrix}$
+
+\appendix
+
+\chapter{Dérivations mathématiques complètes}
+
+\section{Récapitulatif des notations}
+\begin{itemize}
+  \item $\mathbf{a}^{(0)} = \mathbf{x} \in \mathbb{R}^{n_0}$ : vecteur d'entrée (avec $n_0 = 46$)
+  \item Pour $k = 1, \ldots, L$ : couche $k$ de dimension $m_k$
+  \item Couche de sortie : $m_L = 81$
+  \item $\mathbf{z}^{(k)} = W^{(k)} \mathbf{a}^{(k-1)} + \mathbf{b}^{(k)}$, $\mathbf{a}^{(k)} = \phi^{(k)}(\mathbf{z}^{(k)})$
+  \item Étiquette : $\mathbf{y} \in \{0,1\}^{81}$ avec une composante égale à 1 à l'indice $9d^* + a^*$
+  \item $\boldsymbol{\delta}^{(k)} = \frac{\partial \mathcal{L}}{\partial \mathbf{z}^{(k)}} \in \mathbb{R}^{m_k}$
+\end{itemize}
+
+\section{Dérivées explicites pour la couche de sortie ($k = L$)}
+
+\begin{theorem}[Gradient de sortie détaillé]
+Pour $i \in \{0, 1, \ldots, 80\}$ :
+$\delta^{(L)}_i = a^{(L)}_i - y_i$
+
+Les gradients des paramètres de la couche de sortie sont :
+\begin{align}
+\frac{\partial \mathcal{L}}{\partial W^{(L)}_{ij}} &= \delta^{(L)}_i \cdot a^{(L-1)}_j, \quad i \in \{0, \ldots, 80\}, \; j \in \{0, \ldots, m_{L-1}-1\}\\
+\frac{\partial \mathcal{L}}{\partial b^{(L)}_i} &= \delta^{(L)}_i
+\end{align}
+\end{theorem}
+
+\section{Dérivées pour les couches cachées ($k < L$)}
+
+\begin{theorem}[Rétropropagation complète avec ReLU]
+Pour $k \in \{L-1, L-2, \ldots, 1\}$ :
+$\delta^{(k)}_i = \left(\sum_{j=0}^{m_{k+1}-1} W^{(k+1)}_{ji} \delta^{(k+1)}_j\right) \cdot \mathbb{1}_{z^{(k)}_i > 0}$
+
+Les gradients des paramètres sont :
+\begin{align}
+\frac{\partial \mathcal{L}}{\partial W^{(k)}_{ij}} &= \delta^{(k)}_i \cdot a^{(k-1)}_j\\
+\frac{\partial \mathcal{L}}{\partial b^{(k)}_i} &= \delta^{(k)}_i
+\end{align}
+\end{theorem}
+
+\section{Formulation matricielle par batch}
+
+\begin{important}
+Pour un batch de taille $m$ :
+\begin{align}
+\Delta^{(L)} &= A^{(L)} - Y \in \mathbb{R}^{m \times 81}\\
+\Delta^{(k)} &= \left(\Delta^{(k+1)} (W^{(k+1)})^T\right) \odot \mathbb{1}_{Z^{(k)} > 0}, \quad k = L-1, \ldots, 1\\
+\nabla_{W^{(k)}} \mathcal{L} &= \frac{1}{m} (A^{(k-1)})^T \Delta^{(k)}\\
+\nabla_{\mathbf{b}^{(k)}} \mathcal{L} &= \frac{1}{m} \sum_{i=1}^{m} \Delta^{(k)}_{i,:}
+\end{align}
+
+où $\odot$ désigne le produit de Hadamard (élément par élément).
+\end{important}
+
+\chapter{Extensions et perspectives}
+
+\section{Améliorations possibles}
+
+\subsection{Techniques d'optimisation avancées}
+\begin{itemize}
+  \item \textbf{Adam optimizer} : adaptation automatique du taux d'apprentissage avec moments
+  \item \textbf{Learning rate scheduling} : décroissance progressive ou cyclique
+  \item \textbf{Batch normalization} : normalisation des activations entre couches
+  \item \textbf{Dropout} : régularisation par masquage aléatoire de neurones
+  \item \textbf{Gradient clipping} : limitation de la norme du gradient
+\end{itemize}
+
+\subsection{Architectures alternatives}
+\begin{itemize}
+  \item \textbf{Réseaux convolutifs} : exploitation de la structure spatiale du plateau
+  \item \textbf{Réseaux résiduels} : connexions directes pour faciliter l'entraînement profond
+  \item \textbf{Attention mechanisms} : focus adaptatif sur les régions importantes du plateau
+  \item \textbf{Architectures plus profondes} : augmentation du nombre de couches cachées
+\end{itemize}
+
+\subsection{Amélioration de la représentation}
+\begin{itemize}
+  \item \textbf{Features additionnelles} : mobilité, contrôle du centre, menaces
+  \item \textbf{Encodage positionnel} : coordonnées spatiales explicites
+  \item \textbf{Représentation symétrique} : augmentation des données par symétrie
+\end{itemize}
+
+\section{Applications à d'autres jeux}
+
+L'architecture développée est générique et peut être adaptée à :
+\begin{itemize}
+  \item \textbf{Fanorona} sur plateaux plus grands (5×9 traditionnel)
+  \item \textbf{Autres jeux de plateau} : échecs simplifiés, dames, etc.
+  \item \textbf{Jeux combinatoires} : avec encodage approprié de l'état
+\end{itemize}
+
+\section{Apprentissage par renforcement}
+
+Une extension naturelle serait l'utilisation de techniques d'apprentissage par renforcement :
+\begin{itemize}
+  \item \textbf{Self-play} : le modèle joue contre lui-même pour s'améliorer
+  \item \textbf{Q-learning} : apprentissage de la fonction de valeur
+  \item \textbf{Policy gradient} : optimisation directe de la politique
+  \item \textbf{AlphaZero-like} : combinaison MCTS + réseau neuronal
+\end{itemize}
+
+\chapter{Conclusion}
+
+Ce document a présenté une analyse exhaustive de l'architecture et de l'implémentation d'un réseau de neurones pour le jeu Fanorona 3×3. L'approche développée combine une fondation mathématique rigoureuse avec une implémentation efficace en Rust, démontrant l'applicabilité des techniques d'apprentissage profond aux jeux traditionnels.
+
+Les contributions principales incluent :
+\begin{enumerate}
+  \item Une formulation mathématique complète des algorithmes de propagation avant et arrière
+  \item Une implémentation matricielle par batch pour des performances optimales
+  \item L'utilisation de l'activation ReLU dans les couches cachées pour éviter le gradient vanishing
+  \item Une architecture modulaire et extensible en Rust
+  \item Une analyse détaillée de la stabilité numérique et des choix d'implémentation
+  \item Des perspectives d'extension vers des problèmes plus complexes
+\end{enumerate}
+
+\textbf{Résultats clés :}
+\begin{itemize}
+  \item Architecture flexible paramétrable par taille de couches
+  \item Encodage one-hot préservant la structure catégorielle
+  \item Optimisation par mini-batch avec opérations matricielles
+  \item Système de sauvegarde/chargement pour la reprise d'entraînement
+  \item Interface de jeu interactive pour validation qualitative
+\end{itemize}
+
+L'architecture générique proposée offre une base solide pour l'exploration de variantes plus sophistiquées et l'application à d'autres jeux de stratégie combinatoire. Les fondements mathématiques détaillés permettent une compréhension approfondie des mécanismes d'apprentissage et facilitent les extensions futures.
+
+\textbf{Perspectives futures :}
+
+L'intégration de techniques d'apprentissage par renforcement, l'exploration d'architectures plus profondes, et l'application à des plateaux de taille standard (5×9) constituent des directions prometteuses pour poursuivre ce travail.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
