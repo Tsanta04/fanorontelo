@@ -21,3 +21,7 @@ No vectorization and batch processing here
 
 ```bash
 cargo run
+```
+
+## Latex documentation 
+**fanorona.pdf**
