@@ -23,4 +23,7 @@ cargo run [options] play <model_bin_path>
 - create or train models (saving each epoch parameters in the <model_save_dir> directory)
 ```bash
 cargo run [options] cm <model_save_dir>
+
+# to activate rust optimizations
+cargo run --release cm <model_save_dir>
 ```
