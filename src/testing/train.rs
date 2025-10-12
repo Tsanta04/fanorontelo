@@ -23,7 +23,7 @@ pub fn continue_train_model_with_batch(
     step_size: usize,
 ) {
     let mut nn = NeuralNetwork::from_file(model.to_string());
-    train_model_with_batch(&mut nn, models_dir, train_filename,validation_filename, model_name, epochs,batch_size,step_size);
+    train_model_with_batch(&mut nn, models_dir, train_filename, validation_filename, model_name, epochs, batch_size, step_size);
 }
 
 #[allow(unused)]
