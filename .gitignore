@@ -1,3 +1,3 @@
-./models
-./target
+models/
+target/
 Cargo.lock
