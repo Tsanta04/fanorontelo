@@ -42,8 +42,8 @@ fn main() {
     const EPOCHS: usize = 500;
     const STEP_SIZE: usize = EPOCHS/5;
     const BATCH_SIZE: usize = 2;
-    const TRAIN_FILE: &str = "dataset/fanorona/all.txt";
-    const VAL_FILE: &str = "dataset/fanorona/all.txt";
+    const TRAIN_FILE: &str = "datasets/depth6/all.txt";
+    const VAL_FILE: &str = "datasets/depth6/all.txt";
     // this is the directory where you model will be registered
 
     const MODELS_DIR: &str = "models"; // Directory where models will be saved
