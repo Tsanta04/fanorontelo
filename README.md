@@ -7,6 +7,21 @@ This project is a from-scratch implementation of a Neural Network in Rust, desig
 
 The entire neural network, including matrix operations, activation functions, and backpropagation, is built without external machine learning libraries.
 
+
+## Team Presentation
+
+This project was developed by a group of students passionate about Artificial Intelligence and Parallel Programming.
+Each member contributed to different aspects of the implementation, from theoretical research to practical coding and testing.
+
+-  RAMAROSON Tojotiana Cyriaque
+
+-  RAKOTOARIJAONA Aro Mino Avotra
+
+-  RANDRIANARISOA Tsantamirindra
+
+-  RANAIVO Ny Aina Peniala
+
+
 ## Project Branches
 
 This repository contains several branches, each representing a different stage or approach to the implementation:
