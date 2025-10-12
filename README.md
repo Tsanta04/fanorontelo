@@ -6,16 +6,16 @@ A Rust crate for experimenting with neural networks, games, and math utils. Dive
 The neural network will try to imitate the minimax algorithm for a fanorontelo bot which predict the best move from a given position
 
 ## Regard of this branch
-Vectorization of batch processing using ndarray
+Vectorization of batch processing using ndarray to increase performance
 
 ## Src directory Breakdown
-# neural.rs: Neural network implementation
-# fanorona3.rs: Game logic for fanorona 3x3 (fanorontelo)
-# tictactoe.rs: [test] Game logic for a tictactoe game (to test mini generic modeling)
-# dataset.rs: [test] Tictactoe dataset generation (to test mini generic modeling)
-# main.rs: calling model creation and training or playing against a model
-## Quick Start
+- **neural.rs**: Neural network implementation
+- **fanorona3.rs**: Game logic for fanorona 3x3 (fanorontelo)
+- **tictactoe.rs**: [test] Game logic for a tictactoe game (to test mini generic modeling)
+- **dataset.rs**: [test] Tictactoe dataset generation (to test mini generic modeling)
+- **main.rs**: calling model creation and training or playing against a model
 
+## Quick Start
 # to play with a model (saved in <model_bin_path>)
 ```bash
 cargo run play [options] <model_bin_path>
