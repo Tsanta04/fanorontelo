@@ -4,7 +4,7 @@
 
 A sleek Rust crate for experimenting with neural networks, games, and math utils. Dive into AI-driven gameplay like Fanorona with MinMax and NN magic!
 
-## Directory Breakdown
+## Src directory Breakdown
 
 - **data/**: Manages datasets creation and data loading pipelines.
 - **games/**: Core game logic, including Fanorona rules and MinMax AI strategies.
