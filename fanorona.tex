@@ -722,7 +722,10 @@ L'initialisation Xavier généralise cette condition en considérant également 
 
 \section{Algorithme de mise à jour des paramètres}
 
-\subsection{Descente de gradient standard}
+\subsection{Modèle stochastique : Descente de gradient standard}
+
+Le modèle stochastique consiste à mettre à jour les poids du réseau de neurones après l’observation de chaque position du jeu, plutôt qu’après une moyenne sur un ensemble de données. \\ \\ 
+Autrement dit, chaque position $(x_i, y_i)$ est utilisée individuellement pour calculer l’erreur et effectuer une rétropropagation immédiate.\\
 
 \begin{definition}[Règle de mise à jour]
 À chaque itération $t$, les paramètres sont mis à jour selon :
@@ -732,6 +735,7 @@ W^{(k)}_{t+1} &= W^{(k)}_t - \alpha \nabla_{W^{(k)}} \mathcal{L}_t\\
 \end{align}
 où $\alpha > 0$ est le taux d'apprentissage.
 \end{definition}
+
 
 % \subsection{Considérations sur la convergence}
 
