@@ -6,7 +6,7 @@ use std::{
 use ndarray::prelude::*;
 use ndarray_rand::{
     rand::{seq::SliceRandom, thread_rng},
-    rand_distr::{Distribution, Uniform},
+    rand_distr::{Distribution, Uniform,num_traits::Float},
 };
 use serde::{Deserialize, Serialize};
 
@@ -217,7 +217,9 @@ impl Neural {
         tr_file: &str,
         save_dir: &str,
     ) {
+        let step_size = 100.0;
         let mut learning_rate = init_lr;
+        
         let eps = 0.0009;
         let output_size = *self.layers.last().unwrap();
         let mut datasets = load_dataset(tr_file, input_size, output_size);
@@ -229,7 +231,6 @@ impl Neural {
             let mut epoch_loss = 0.0;
             let epoch_start = std::time::Instant::now();
             let mut batch_count = 0;
-
             datasets.shuffle(&mut shuffler);
 
             for (batch_idx, batch) in datasets.chunks(batch_size).enumerate() {
@@ -273,10 +274,9 @@ impl Neural {
             );
             println!("-----------------------------------------");
 
-            // if (epoch + 1) % lr_schedule == 0 {
-            //     learning_rate *= 0.7;
-            // }
-
+            // scheduling learning rate (step decay)
+            learning_rate = init_lr * ((0.5).powf((epoch as f64 +1) / step_size));
+            
             if epoch_loss < eps {
                 break;
             }
