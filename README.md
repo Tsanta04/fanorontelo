@@ -34,6 +34,7 @@ This repository contains several branches, each representing a different stage o
 
 ## Project Structure
 
+- For hand coded branches
 ```
 .
 ├── apk/                  # Android APK build for the game
@@ -51,6 +52,12 @@ This repository contains several branches, each representing a different stage o
 │   └── testing/          # Training and evaluation scripts
 └── README.md
 ```
+- For ndarray / main version
+    - **neural.rs**: Neural network implementation
+    - **fanorona3.rs**: Game logic for fanorona 3x3 (fanorontelo)
+    - **tictactoe.rs**: [test] Game logic for a tictactoe game (to test mini generic modeling)
+    - **dataset.rs**: [test] Tictactoe dataset generation (to test mini generic modeling)
+    - **main.rs**: calling model creation and training or playing against a model
 
 ## Core Features
 
