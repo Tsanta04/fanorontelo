@@ -156,13 +156,3 @@ The `apk/` directory contains a pre-built Android application to play the game.
 1.  **Installation**: Transfer the `.apk` file from the `apk/` directory to your Android device and install it. You may need to enable "Install from unknown sources" in your device's security settings.
 2.  **Internet Connection**: The app requires an active internet connection to communicate with the neural network model, which is deployed on a free hosting service.
 3.  **Important Note**: The free hosting service puts the server to sleep when it's inactive. **The first AI move in a new game session can take up to 5 minutes** while the server wakes up. Subsequent moves will be significantly faster.
-
-
-
-```
-
-This `README.md` should give anyone who finds your repository a clear and comprehensive understanding of your impressive work. Let me know if you'd like any adjustments!
-
-<!--
-[PROMPT_SUGGESTION]How can I refactor the command-line argument parsing in `main.rs` to be more robust using a crate like `clap`?[/PROMPT_SUGGESTION]
-[PROMPT_SUGGESTION]Explain the math behind the backpropagation implementation in `nn/learn.rs`, specifically the gradient calculation for the Sigmoid activation function.[/PROMPT_SUGGESTION]
