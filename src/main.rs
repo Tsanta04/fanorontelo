@@ -71,11 +71,11 @@ pub fn create_model(save_dir:&str) {
     let tr_file = "dataset/fanorona/all.txt"; // actually it contains all possible positions
 
     // ==== load model from binaries
-    let model = "models/fanorona3/epoch_200.bin";
-    let mut ne = Neural::load_from_bin(model).unwrap();
+    // let model = "models/fanorona3/epoch_200.bin";
+    // let mut ne = Neural::load_from_bin(model).unwrap();
 
     // ==== new model (creating new model from nothing)
-    // let mut ne = Neural::xavier(layers, input_size);
+    let mut ne = Neural::xavier(layers, input_size);
 
     // ================= TRAINING ========================
     let train_start = std::time::Instant::now();
